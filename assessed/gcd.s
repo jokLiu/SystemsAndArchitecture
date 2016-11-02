@@ -42,7 +42,7 @@ INPUT2:
     syscall		    	; # Print the string
 	j       INPUT2		; # Get the input 2 again
 	
-	
+
 JGCD:
 	jal 	GCDMAIN     ; # Jump and link to the greatest common divasor function
 	move 	$a0,$v0     ; # Copy result into a0 for printing
@@ -55,26 +55,23 @@ JGCD:
 EXIT:
 	li  	$v0,10	    ; # System call code for exit
     syscall			    ; # Exit	
-	
+
+#main greatest common divisor function	
 GCDMAIN:
     li      $t0,0       ; # Load 0 into register t0
     bne     $a2,$t0,REC ; # Check if n==0 then we return m else jump to recursion
     move    $v0,$a1     ; # Copy m value from register a1 to function return register v0
-    j       RET         ; # Jump to return 
+    jr      $ra         ; # Return
 REC:
-    addi	$sp,$sp,-12	; # Decrement sp
-	sw	    $a1,8($sp) 	; # Push a1 (value m) onto the stack
-	sw      $a2,4($sp)  ; # Push a2 (value n) onto the stack
+    addi	$sp,$sp,-4	; # Decrement sp
 	sw	    $ra,0($sp)	; # Push ra onto stack
 	jal     MOD         ; # Find the modulo of m and n
 	move    $a1,$a2     ; # Move value of a2 to a1 (from n to m)
 	move    $a2,$v0     ; # Load the return value of modulo to a2 (to n)
 	jal 	GCDMAIN		; # Jump to the greatest common divisor main function
-	lw	    $a1,8($sp)	; # Pop stack into a1
-	lw      $a2,4($sp)  ; # Pop stack into a2
 	lw  	$ra,0($sp)	; # Pop stack into ra
-	addi	$sp,$sp,12	; # Increment sp
-    j       RET         ; # Return
+	addi	$sp,$sp,4	; # Increment sp
+    jr      $ra         ; # Return
     
 
 #Modulo function 
@@ -90,11 +87,8 @@ ENDLOOP:                ; # End of the loop
     addi    $t1,$t1,-1  ; # Substract 1 from i
     mul     $t1,$t1,$a2 ; # Multiply (i-1)*n where n is in register $a2, and (i-1) in register $t1
     sub     $v0,$a1,$t1 ; # Substract (i-1)*n from m and return
-   
-  
-RET: 
     jr      $ra         ; # Return
-    
+ 
     
     
     
